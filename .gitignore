@@ -4,3 +4,20 @@
 *.jar
 *.war
 *.ear
+
+# Metadata folder
+.metadata
+
+# Binary
+SeaBattleClient/bin
+SeaBattleServer/bin
+
+# Settings
+SeaBattleClient/.settings
+SeaBattleServer/.settings
+
+# Others
+SeaBattleClient/.classpath
+SeaBattleClient/.project
+SeaBattleServer/.classpath
+SeaBattleServer/.project
