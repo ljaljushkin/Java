@@ -24,11 +24,11 @@ public class MainWindow {
 	static int indexInShip=0;
 	static boolean lX = true,lY=true;
 	
-    public static void main(String[] ar) 
+    /*public static void main(String[] ar) 
     {
     	MyRunnable runnable=new MyRunnable();
  	    SwingUtilities.invokeLater(runnable);
-    }
+    }*/
     
     static Socket 		socket;
     static JButton 		connectButton;
@@ -69,6 +69,10 @@ public class MainWindow {
     
     static boolean flag = true;
     
+    public MainWindow() 
+    {
+    	createAndShowGUI(); //TODO: run in separate thread
+    }
 	public static void RunClient()
     {
 		int serverPort = 0;

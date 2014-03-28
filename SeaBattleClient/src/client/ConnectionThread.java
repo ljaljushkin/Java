@@ -190,7 +190,7 @@ public class ConnectionThread extends Thread{
 			public void run() {
 				try {
 					MainWindow window = new MainWindow();//(nTeam, m_connectionState.m_clientSocket, m_connectionState.m_frame.getTitle());
-					//window.frame.setVisible(true);
+					//window.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -301,7 +301,7 @@ public class ConnectionThread extends Thread{
 			disableAll();
 			con=false;
 			this.interrupt();
-			//e.printStackTrace();
+			e.printStackTrace();
 		}
 	}
 }

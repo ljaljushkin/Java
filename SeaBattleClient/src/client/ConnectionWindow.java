@@ -42,7 +42,7 @@ public class ConnectionWindow {
 	private void initialize(){
 		m_connectionState = new ConnectionState();
 		
-		m_connectionWindowFrame = new JFrame("Chess Client");
+		m_connectionWindowFrame = new JFrame("Sea Battle Client");
 		m_connectionWindowFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		m_connectionWindowFrame.setSize(190, 110);
 		m_connectionWindowFrame.setLocation(100, 100);
@@ -52,7 +52,7 @@ public class ConnectionWindow {
 		
 		m_connectionWindowFrame.getContentPane().setLayout(new GridBagLayout());
 		
-		//cs.frame=frame;
+		m_connectionState.m_frame = m_connectionWindowFrame;
 		
 		GridBagConstraints gbc = new GridBagConstraints();
 		

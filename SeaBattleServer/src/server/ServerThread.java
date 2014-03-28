@@ -16,8 +16,8 @@ public class ServerThread extends Thread {
 	private ServerSocket m_serverSocket;
 	
 	
-	//private HashMap<Communicator,ClientInfo> m_freeClient;
-	//private HashMap<Communicator,ClientInfo> m_busyClient;
+	private HashMap<Communicator,ClientInfo> m_freeClient;
+	private HashMap<Communicator,ClientInfo> m_busyClient;
 	
 	
 	public ServerThread(JTextArea out){
@@ -25,7 +25,7 @@ public class ServerThread extends Thread {
 		
 	}
 	
-	/*public void sendListsAll(){
+	public void sendListsAll(){
 		Iterator<Entry<Communicator, ClientInfo>> it=m_freeClient.entrySet().iterator();
 		while (it.hasNext()){
 			Entry<Communicator, ClientInfo> s=it.next();
@@ -34,7 +34,7 @@ public class ServerThread extends Thread {
 		Iterator<Entry<Communicator, ClientInfo>> it2=m_busyClient.entrySet().iterator();
 		while (it2.hasNext()){
 			Entry<Communicator, ClientInfo> s=it2.next();
-			if (s.getValue().waiting) s.getKey().sendLists();
+			if (s.getValue().m_waiting) s.getKey().sendLists();
 		}
 	}
 	
@@ -61,12 +61,12 @@ public class ServerThread extends Thread {
 			e.printStackTrace();
 		}
 		this.interrupt();
-	}*/
+	}
 	
 	public void run(){
 		try{
-			//m_freeClient=new HashMap<Communicator,ClientInfo>();
-			//m_busyClient=new HashMap<Communicator,ClientInfo>();
+			m_freeClient=new HashMap<Communicator,ClientInfo>();
+			m_busyClient=new HashMap<Communicator,ClientInfo>();
 			
 			m_serverSocket=new ServerSocket(4378);
 			
@@ -77,14 +77,14 @@ public class ServerThread extends Thread {
 				
 				Socket clientSocket=m_serverSocket.accept();
 				
-				//ClientInfo cl=new ClientInfo();
+				ClientInfo cl=new ClientInfo();
 				
-				//Communicator cm=new Communicator(clientSocket,m_freeClient,
-						//m_busyClient,m_out,cl,this);
+				Communicator cm=new Communicator(clientSocket,m_freeClient,
+						m_busyClient,m_out,cl,this);
 				
-				//m_freeClient.put(cm, cl);
+				m_freeClient.put(cm, cl);
 				
-				//cm.start();
+				cm.start();
 				
 				m_out.append("Client connected!\n");
 				
@@ -92,7 +92,7 @@ public class ServerThread extends Thread {
 			}
 			
 		}catch(IOException e){
-			//e.printStackTrace();	
+			e.printStackTrace();	
 		}
 	}
 

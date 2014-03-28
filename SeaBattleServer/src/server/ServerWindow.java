@@ -27,7 +27,7 @@ public class ServerWindow {
 	
 	private JTextArea m_serverInfo;
 	private boolean m_isStarted = false;
-	//private ServerThread server;
+	private ServerThread server;
 	
 	private JScrollPane m_scrollPane;
 	
@@ -75,8 +75,8 @@ public class ServerWindow {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				if (!m_isStarted) {
-					//server = new ServerThread(serverInfo);
-					//server.start();
+					server = new ServerThread(m_serverInfo);
+					server.start();
 					m_startServerButton.setEnabled(false);
 					m_stopServerButton.setEnabled(true);
 					m_isStarted = true;
