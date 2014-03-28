@@ -16,8 +16,3 @@ SeaBattleServer/bin
 SeaBattleClient/.settings
 SeaBattleServer/.settings
 
-# Others
-SeaBattleClient/.classpath
-SeaBattleClient/.project
-SeaBattleServer/.classpath
-SeaBattleServer/.project
