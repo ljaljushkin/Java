@@ -4,6 +4,6 @@ public class MyRunnable implements Runnable{
 
 	public void run()
 	{
-		MainWindow.createAndShowGUI();
+		//MainWindow.createAndShowGUI();
 	}
 }

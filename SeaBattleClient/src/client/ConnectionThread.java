@@ -189,7 +189,7 @@ public class ConnectionThread extends Thread{
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					MainWindow window = new MainWindow();//(nTeam, m_connectionState.m_clientSocket, m_connectionState.m_frame.getTitle());
+					MainWindow window = new MainWindow(m_connectionState.m_clientSocket);//(nTeam, m_connectionState.m_clientSocket, m_connectionState.m_frame.getTitle());
 					//window.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
