@@ -94,11 +94,11 @@ public class Communicator extends Thread{
 		}
 	}
 	
-	public void initGame(int nTeam){
+	public void initGame(boolean isFirst){
 		try{
 			ObjectOutputStream oos=new ObjectOutputStream(m_client.getOutputStream());
 			oos.writeInt(5);
-			oos.writeInt(nTeam);
+			oos.writeBoolean(isFirst);
 			oos.flush();
 		}catch(Exception e){
 			if (m_clientInfo.m_partner!=null){
@@ -193,8 +193,8 @@ public class Communicator extends Thread{
 							
 							m_serverThread.sendListsAll();
 							
-							this.initGame(2);
-							s.getKey().initGame(1);
+							this.initGame(false);
+							s.getKey().initGame(true);
 							break;
 						}
 						

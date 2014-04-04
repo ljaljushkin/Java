@@ -185,11 +185,11 @@ public class ConnectionThread extends Thread{
 		
 	}
 	
-	public void InitGame(final int nTeam){
+	public void InitGame(final boolean isFirst){
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					MainWindow window = new MainWindow(m_connectionState.m_clientSocket);//(nTeam, m_connectionState.m_clientSocket, m_connectionState.m_frame.getTitle());
+					MainWindow window = new MainWindow(m_connectionState.m_clientSocket, isFirst);//(nTeam, m_connectionState.m_clientSocket, m_connectionState.m_frame.getTitle());
 					//window.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -288,8 +288,8 @@ public class ConnectionThread extends Thread{
 				}
 				
 				if (nComand==5){
-					int nTeam=ois.readInt();
-					InitGame(nTeam);
+					boolean isFirst = ois.readBoolean();
+					InitGame(isFirst);
 					break;
 				}
 			

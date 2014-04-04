@@ -17,66 +17,12 @@ public class MainWindow {
 	
 	public JFrame m_frame;
 	public GameState gs;
-	
-	
-	/*static int x; // большие - коорди0наты 10х10
-	static int y;
-	static int X; // маленькие - экранные
-	static int Y;
-	static int XY; // X+10*Y
-	static int currIndex=0; //индекс текущего корабля при добавлении(от нуля)
-	static int currLen=0;
-	static int indexInShip=0;
-	static boolean lX = true,lY=true;
-	
-    /*public static void main(String[] ar) 
-    {
-    	MyRunnable runnable=new MyRunnable();
- 	    SwingUtilities.invokeLater(runnable);
-    }*/
-    
-   /* static Socket 		socket;
-    static JButton 		connectButton;
-    static JButton 		closeButton;
-    static JButton 		sendButton;
-    static JLabel  		label;
-    static JLabel  		label_conn;
-    static JTextField	textIP;
-    static JTextField	textPORT;
-    static JTextField	textSend;
-    static JButton 		shipButton;
-    static JLabel 		label_i;
-    static JLabel 		decks;
-    static JLabel 		XOD;
-    
-    //static  JPanel myPanel;
-    //static  JPanel enemyPanel;
-    
-    static Ship[]	ships   = new Ship[10];
-    static MyLabel[][] enemyField = new MyLabel[10][10];
-    static MyLabel[][] myField  = new MyLabel[10][10];
- 	
-    static boolean flag_newShips=false;
-    static boolean flag_game=false;
-    static boolean flag_readyShips=false;// размечены ли они?
-    static boolean flag_xoda=false;
-    static boolean flag_choose=false;	
-    
-    static InputStream 	sin;
-    static OutputStream sout;
-    
-    static Icon marked;  
-    static Icon injured;
-    static Icon green;
-    static Icon sea;
-    static Icon dead;
-    static Icon mimo;
-    
-    static boolean flag = true;*/
-    
-    public MainWindow(Socket clientSocket) 
+	   
+    public MainWindow(Socket clientSocket, boolean isFirst) 
     {
     	createAndShowGUI(); //TODO: run in separate thread
+    	
+    	gs.flag_xoda = isFirst;
     	
     	ClientThread clientThread = new ClientThread(gs);	
 		clientThread.m_clientSocket = clientSocket;
@@ -113,7 +59,7 @@ public class MainWindow {
         		gs.flag_readyShips = false;
         		gs.flag = false;
         		gs.flag_game = true;
-        		gs.flag_xoda = false; // Server is the first
+        		//gs.flag_xoda = false; // Server is the first
         		 
         	}
         }
@@ -207,7 +153,7 @@ public class MainWindow {
         			lN.IsFired = true;
         			if(lN.IsShip)
     				{
-    					if(CheckDead())
+    					if(gs.CheckDead())
     					{	
     						toServ = 2;
     						//out.writeByte(toServ);
@@ -252,185 +198,12 @@ public class MainWindow {
         		else
         			gs.label_i.setText("Некорректные координаты");
         			//out.writeByte(toServ);
-        		
         	}
         }
     }
 	
-	public boolean CheckDead()
+	public void createAndShowGUI()
 	{
-		int ind = gs.myField[gs.X][gs.Y].indexOfShip;
-		int n = gs.ships[ind].len;
-		int xx,yy;
-		
-		for(int i = 0; i < n; i++)
-		{
-			xx = gs.ships[ind].arrOfXY[2*i];
-			yy = gs.ships[ind].arrOfXY[2*i+1];
-			if(!gs.myField[xx][yy].IsFired)
-				return false;
-		}
-		return true;
-	}
-	
-	public boolean FindXY(MouseEvent arg0)
-	{
-		int tempX=-1;
-		int tempY=-1;
-		gs.x = arg0.getX();
-		gs.X = -1;
-		gs.y = arg0.getY();
-		gs.Y = -1;
-		
-		tempX = gs.x - 20;
-		tempY = gs.y - 26;
-		
-		if(gs.x < 315 && gs.x > 20 && gs.y < 321 && gs.y > 26){
-			gs.X = tempX / 30;
-			gs.Y = tempY / 30;
-			gs.XY = gs.X + 10 * gs.Y;
-			//label.setText("x= "+x+" y= "+y+"X= "+X+"Y = "+Y+" XY="+XY);
-			return true;
-		}
-		return false;
-	}
-	
-	public void SetCurrLen(int currInd)
-	{
-		switch(currInd)
-		{
-			case 0:
-				gs.currLen = 4;
-			break;
-			case 1: case 2:
-				gs.currLen = 3;
-			break;
-			case 3: case 4: case 5: 
-				gs.currLen = 2;
-			break;
-			case 6: case 7: case 8: case 9: 
-				gs.currLen = 1;
-			break;
-		}
-	}
-	
-	public void markShips()
-	{
-		gs.currIndex = 0;
-		SetCurrLen(gs.currIndex);
-		CreateShip(gs.currLen, gs.currIndex);	
-	}
-	
-	public void CreateShip(int len,int ind)
-	{
-		gs.ships[ind] = new Ship(len);
-		
-	}
-	public boolean IsLine()
-	{
-		Ship sh = gs.ships[gs.currIndex];
-		Integer Xx = sh.arrOfXY[0];
-		Integer Yy = sh.arrOfXY[1];
-		
-		gs.lX = true;
-		gs.lY = true;
-		
-		Integer tempX = 0, xMIN = Xx, xMAX = Xx;
-		Integer tempY = 0, yMIN = Yy, yMAX = Yy;
-		for(int i = 1; i < gs.currLen; i++){	
-			tempX = sh.arrOfXY[2*i];
-			tempY = sh.arrOfXY[2*i+1];
-			
-			if(!Xx.equals(tempX)) 
-				gs.lX=false;
-			
-			if(!Yy.equals(tempY))  
-				gs.lY=false;
-			
-			if(tempX < xMIN) xMIN=tempX;
-			if(tempY < yMIN) yMIN=tempY;
-			if(tempX > xMAX) xMAX=tempX;
-			if(tempY > yMAX) yMAX=tempY;
-		}
-		
-		if(gs.lX)
-			gs.decks.setText("В одну линию по Y");
-		else 
-			if(gs.lY)
-				gs.decks.setText("В одну линию по X");
-		
-		if(!gs.lX && !gs.lY)
-		{
-			gs.decks.setText("Не в одну линию!");
-			return false;
-		}
-		else // IsSequence
-		{
-			if ( (gs.lX && ((yMAX-yMIN) == gs.currLen-1)) || (gs.lY && ((xMAX-xMIN) == gs.currLen-1 )) )
-			{
-				gs.decks.setText("корабль был добавлен!");
-				
-			}
-			else
-			{
-				gs.decks.setText("Не подряд");
-				return false;
-			}	
-		}
-		return true;
-	}
-	
-	public boolean CheckShip(){
-		if( gs.currLen != (gs.indexInShip) )
-		{
-			gs.decks.setText("Мало палуб!");
-			return false;
-		}
-		if (!IsLine())
-		{
-			return false;
-		}
-		return true;			
-	}
-	
-	public void DrawSea(Icon image1, Icon image2, GridBagConstraints c)
-	{	
-		for (int i = 0; i < 10; i++)
-		{
-			for (int j = 0; j < 10; j++)
-			{
-				gs.enemyField[j][i] = new MyLabel();
-				gs.myField[j][i] = new MyLabel();
-				
-				gs.myField[j][i].setIcon(image1);
-				gs.enemyField[j][i].setIcon(image1);
-								
-				c.gridx = i;
-				c.gridy = j;
-				c.gridwidth = 1;
-				c.gridheight = 1;
-
-				gs.myPanel.add (gs.myField[j][i], c);
-				
-				c.gridx = i+10;
-				c.gridy = j;
-				c.gridwidth = 1;
-				c.gridheight = 1;
-				
-				gs.enemyPanel.add(gs.enemyField[j][i], c);	
-			}
-		}
-		gs.XOD	= new JLabel("Игра еще не началась...");
-		gs.XOD.setForeground(Color.RED);
-		Font font = new Font("Verdana", Font.BOLD, 24);
-		gs.XOD.setFont(font);
-		gs.XOD.setVisible(true);
-		
-		gs.enemyPanel.add(gs.XOD);
-	}
-	
-     public void createAndShowGUI()
-   {
 		m_frame = new JFrame("CLIENT");
 		m_frame.setSize(1043,463);
 		m_frame.setVisible(true);
@@ -460,7 +233,7 @@ public class MainWindow {
 		url = MainWindow.class.getResource("images/mimo.jpg");
 		gs.mimo  		=  new ImageIcon(url);
 			
-		DrawSea(gs.sea,gs.dead,c);
+		gs.DrawSea(c);
 		
 		gs.decks = new JLabel();
 		final JPanel panel_palub = new JPanel();
@@ -489,7 +262,7 @@ public class MainWindow {
 					if (gs.flag_newShips )
 					{
 						
-						if( FindXY(arg0) )
+						if(gs.FindXY(arg0))
 							{					
 									
 									if(!gs.myField[gs.X][gs.Y].IsShip && 
@@ -568,7 +341,7 @@ public class MainWindow {
 						// TODO Auto-generated method stub
 						if (gs.flag_game && gs.flag_xoda){
 							gs.flag_choose = false;
-							if(FindXY(arg0))
+							if(gs.FindXY(arg0))
 							{	
 								if(!gs.enemyField[gs.X][gs.Y].IsFired)
 								{
@@ -652,7 +425,7 @@ public class MainWindow {
 					gs.decks.setVisible(true);
 					gs.label_i.setText("Разметка 4-палубника");
 					gs.indexInShip = 0;
-					markShips();	
+					gs.markShips();	
 					gs.shipButton.setEnabled(false);
 				}
 			}
@@ -662,7 +435,7 @@ public class MainWindow {
 		{
 			public void actionPerformed(ActionEvent arg0)
 			{	
-				if(CheckShip())
+				if(gs.CheckShip())
 				{
 					gs.currIndex++;
 					if (gs.currIndex == 10)
@@ -709,9 +482,9 @@ public class MainWindow {
 							}
 						}
 						gs.decks.setText("Корабль добавлен");
-						SetCurrLen(gs.currIndex);
+						gs.SetCurrLen(gs.currIndex);
 						gs.label_i.setText("Разметка" + gs.currLen + " -палубника");
-						CreateShip(gs.currLen, gs.currIndex);
+						gs.CreateShip(gs.currLen, gs.currIndex);
 						gs.indexInShip = 0;
 					}	
 				}
