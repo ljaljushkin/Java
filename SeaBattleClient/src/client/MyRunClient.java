@@ -1,7 +1,9 @@
 package client;
-public class MyRunClient implements Runnable{
+public class MyRunClient implements Runnable
+{
 	@Override
-	public void run() {
+	public void run() 
+	{
 		// TODO Auto-generated method stub
 		//MainWindow.RunClient();
 		

@@ -8,17 +8,15 @@ import java.net.Socket;
 
 import javax.swing.ImageIcon;
 
-
 public class ClientThread extends Thread
 {
-	
-	public Socket m_clientSocket;
+	public Socket    m_clientSocket;
 	
 	public GameState gs;
 	
-	public ClientThread(GameState gameState)
+	public ClientThread( GameState gameState )
 	{
-		gs = gameState;
+		gs             = gameState;
 		m_clientSocket = null;
 	}
 	
@@ -80,8 +78,8 @@ public class ClientThread extends Thread
 	
 	public void run()
 	{
-		try{
-			
+		try
+		{
 			//gs.out.setText("");
 			
 			//gs.out.append("Connection succes!\n");		
@@ -95,46 +93,48 @@ public class ClientThread extends Thread
 			else{
 				gs.myTurn=true;
 				gs.out.append("Your turn!\n");
-			}
-			
+			}	
 			
 			gs.chat.setText("");*/
 			
-			while (true){
-				
+			while ( true )
+			{	
 				
 			}
-		}catch(Exception e){
+		}
+		catch( Exception e )
+		{
 			e.printStackTrace();
+		
 			//gs.out.setText("lost connection!");
 			//cleanGameState();
-		}finally{
-			try {
-				
+		}
+		finally
+		{
+			try 
+			{	
 				m_clientSocket.close();
-			} catch (IOException e) {
+			}
+			catch ( IOException e )
+			{
 				//e.printStackTrace();
 				//gs.out.setText("lost connection!");
 				//cleanGameState();
 			}
-			
 		}
 	}
 	
 	/*public void cleanGameState(){
 		for (int i=0; i<64; i++){
 			gs.gameState[i]=0;
-			
 		}
 		gs.wasSel=false;
 		gs.wasEat=false;
-		
 		
 		try{
 			client.close();
 			//server.close();
 		}catch(IOException e){
-			
 		}
 		
 		gs.serverStarted=false;
@@ -150,18 +150,19 @@ public class ClientThread extends Thread
 		this.interrupt();
 	}*/
 	
-
-	
-	public void sendMessage(String mes){
-		try {
-			ObjectOutputStream oos= new ObjectOutputStream(m_clientSocket.getOutputStream());
-			oos.writeInt(0);
-			oos.writeObject(mes);
+	public void sendMessage( String mes )
+	{
+		try 
+		{
+			ObjectOutputStream oos= new ObjectOutputStream( m_clientSocket.getOutputStream() );
+			oos.writeInt( 0 );
+			oos.writeObject( mes );
 			oos.flush();
-		} catch (IOException e) {
+		} 
+		catch ( IOException e )
+		{
 			//gs.out.setText("lost connection!");
 			//cleanGameState();
 		}
-		
 	}
 }

@@ -15,31 +15,37 @@ import javax.swing.JTextField;
 
 //import server.ServerWindwow;
 
-public class ConnectionWindow {
-
+public class ConnectionWindow 
+{
 	private ConnectionState m_connectionState;
 	private JFrame m_connectionWindowFrame;
 	
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
+	public static void main( String[] args )
+	{
+		EventQueue.invokeLater( new Runnable() 
+		{
+			public void run() 
+			{
+				try 
+				{
 					ConnectionWindow window = new ConnectionWindow();
-					window.m_connectionWindowFrame.setVisible(true);
-				} catch (Exception e) {
+					window.m_connectionWindowFrame.setVisible( true );
+				} 
+				catch ( Exception e )
+				{
 					e.printStackTrace();
 				}
 			}
 		});
-
 	}
 	
-	
-	public ConnectionWindow() {
+	public ConnectionWindow() 
+	{
 		initialize();
 	}
 	
-	private void initialize(){
+	private void initialize()
+	{
 		m_connectionState = new ConnectionState();
 		
 		m_connectionWindowFrame = new JFrame("Sea Battle Client");
@@ -57,42 +63,43 @@ public class ConnectionWindow {
 		GridBagConstraints gbc = new GridBagConstraints();
 		
 		//Connect to Server Button
-		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.gridx = 0;
-		gbc.gridy = 2;
+		gbc.fill       = GridBagConstraints.HORIZONTAL;
+		gbc.gridx      = 0;
+		gbc.gridy      = 2;
 		gbc.gridheight = 1;
-		gbc.gridwidth = 2;
+		gbc.gridwidth  = 2;
 		
 		m_connectionState.m_button=new JButton ("Connect to server");
-		m_connectionState.m_button.addActionListener(new ActionListener(){
-
+		
+		m_connectionState.m_button.addActionListener( new ActionListener()
+		{
 			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				m_connectionState.m_connectionThread=new ConnectionThread(m_connectionState);
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				m_connectionState.m_connectionThread =new ConnectionThread( m_connectionState );
 				m_connectionState.m_connectionThread.start();
 			}
 		});
-		m_connectionWindowFrame.add(m_connectionState.m_button,gbc);
+		
+		m_connectionWindowFrame.add( m_connectionState.m_button, gbc );
 		
 		//dest ip Label
-		gbc.fill = GridBagConstraints.NONE;
-		gbc.gridx = 0;
-		gbc.gridy = 0;
+		gbc.fill       = GridBagConstraints.NONE;
+		gbc.gridx      = 0;
+		gbc.gridy      = 0;
 		gbc.gridheight = 1;
-		gbc.gridwidth = 2;
+		gbc.gridwidth  = 2;
 		m_connectionState.m_label = new JLabel("Destination IP: ");
-		m_connectionWindowFrame.add(m_connectionState.m_label,gbc);
+		m_connectionWindowFrame.add( m_connectionState.m_label, gbc );
 		
 		//ip textfield
-		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.gridx = 0;
-		gbc.gridy = 1;
-		gbc.gridheight=1;
-		gbc.gridwidth=2;
+		gbc.fill       = GridBagConstraints.HORIZONTAL;
+		gbc.gridx      = 0;
+		gbc.gridy      = 1;
+		gbc.gridheight = 1;
+		gbc.gridwidth  = 2;
 		m_connectionState.m_textField = new JTextField();
 		m_connectionState.m_textField.setText("127.0.0.1");
-		m_connectionWindowFrame.add(m_connectionState.m_textField, gbc);
-			
+		m_connectionWindowFrame.add( m_connectionState.m_textField, gbc );
 	}
-
 }

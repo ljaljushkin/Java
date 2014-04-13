@@ -8,8 +8,8 @@ import javax.swing.JLabel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
-public class ConnectionState {
-	
+public class ConnectionState 
+{
 	public JFrame m_frame;
 	
 	public JTextField m_textField;
