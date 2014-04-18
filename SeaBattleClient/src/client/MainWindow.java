@@ -21,13 +21,16 @@ public class MainWindow
 	   
     public MainWindow( Socket clientSocket, boolean isFirst ) 
     {
-    	createAndShowGUI(); //TODO: run in separate thread
-    	
+    	gs = new GameState();
     	gs.flag_xoda = isFirst;
+    	
+    	createAndShowGUI(); //TODO: run in separate thread   	
     	
     	ClientThread clientThread   = new ClientThread( gs );	
 		clientThread.m_clientSocket = clientSocket;
+		gs.socket = clientSocket;
 		clientThread.start();
+        
     }
     
 	public void RunClient()
@@ -225,14 +228,16 @@ public class MainWindow
 	
 	public void createAndShowGUI()
 	{
-		m_frame = new JFrame("CLIENT");
+		if (gs.flag_xoda)
+			m_frame = new JFrame("First");
+		else
+			m_frame = new JFrame("Second");
+		
 		m_frame.setSize(1043,463);
 		m_frame.setVisible(true);
 		m_frame.setLocation(0, 500);	
 		m_frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		m_frame.setResizable(false);
-		
-    	gs = new GameState();
 		
 		gs.myPanel    = new JPanel();
 		gs.enemyPanel = new JPanel();
@@ -452,6 +457,8 @@ public class MainWindow
 						gs.createShipRandomly();
 					}
 					gs.shipButton.setEnabled( false );
+					
+					gs.flag_readyShips = true;
 				}
 			}
 		});

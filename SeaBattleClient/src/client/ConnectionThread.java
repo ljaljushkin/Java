@@ -191,7 +191,7 @@ public class ConnectionThread extends Thread
 			{
 				try 
 				{
-					MainWindow window = new MainWindow( m_connectionState.m_clientSocket, isFirst );//(nTeam, m_connectionState.m_clientSocket, m_connectionState.m_frame.getTitle());
+					MainWindow window = new MainWindow( m_connectionState.m_clientSocket, isFirst);//(nTeam, m_connectionState.m_clientSocket, m_connectionState.m_frame.getTitle());
 					//window.setVisible(true);
 				} 
 				catch ( Exception e )

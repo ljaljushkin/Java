@@ -182,16 +182,22 @@ public class Communicator extends Thread
 				{
 					if ( partner.m_clientInfo.m_isMarking && m_clientInfo.isFirst && m_clientInfo.m_isMarking)
 					{
+						m_clientTextArea.append("Соточка один ушла \n");
 						ObjectOutputStream oos = new ObjectOutputStream( m_client.getOutputStream());
 						oos.writeInt( 101 );
+						oos.flush();
 						ObjectOutputStream oos_partner = new ObjectOutputStream( partner.m_client.getOutputStream());
+						m_clientTextArea.append("Соточка один ушла \n");
 						oos_partner.writeInt( 101 );
+						oos.flush();
+						partner.m_clientInfo.m_isMarking = false;
+						m_clientInfo.m_isMarking = false;
 					}
 				}
 				
 				ObjectInputStream ois = new ObjectInputStream( m_client.getInputStream() );
 				int nComand = ois.readInt();
-				
+								
 				if ( nComand == 0 ) 
 				{
 					String str = (String)ois.readObject();
@@ -288,6 +294,7 @@ public class Communicator extends Thread
 				
 				if ( nComand == 3 )
 				{
+					m_clientTextArea.append("Троечка пришла\n");
 					m_clientInfo.m_waiting = true;
 					m_busyClient.put( this, m_clientInfo );
 					m_freeClient.remove( this );
@@ -296,10 +303,31 @@ public class Communicator extends Thread
 				}
 				if ( nComand == 100 ) // клиент - разметил
 				{
-					m_clientInfo.m_isMarking = true;;
+					m_clientTextArea.append("Соточка пришла\n");
+					//System.out.println("Соточка пришла");
+					m_clientInfo.m_isMarking = true;
 					
-					//m_clientTextArea.append( m_clientInfo.m_name+" Ships were marked!\n" );
+					if (!m_clientInfo.isFirst && m_clientInfo.m_partner.m_clientInfo.m_isMarking)
+					{
+						ObjectOutputStream oos = new ObjectOutputStream(m_clientInfo.m_partner.m_client.getOutputStream());
+						oos.writeInt( 102 );
+						oos.flush();
+					}
 				}
+				if ( nComand == 103 ) // клиент - разметил
+				{
+					m_clientTextArea.append("Соточка один ушла \n");
+					ObjectOutputStream oos = new ObjectOutputStream( m_client.getOutputStream());
+					oos.writeInt( 101 );
+					oos.flush();
+					ObjectOutputStream oos_partner = new ObjectOutputStream( partner.m_client.getOutputStream());
+					m_clientTextArea.append("Соточка один ушла \n");
+					oos_partner.writeInt( 101 );
+					oos.flush();
+					partner.m_clientInfo.m_isMarking = false;
+					m_clientInfo.m_isMarking = false;
+				}
+					//m_clientTextArea.append( m_clientInfo.m_name+" Ships were marked!\n" );
 			}
 		}
 		catch( Exception e )

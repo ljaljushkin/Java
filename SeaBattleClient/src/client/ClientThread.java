@@ -112,16 +112,36 @@ public class ClientThread extends Thread
 	        	}
 	        }
 	        
-	        ObjectOutputStream oos = new ObjectOutputStream( m_clientSocket.getOutputStream());
+	        ObjectOutputStream oos = new ObjectOutputStream( gs.socket.getOutputStream());
 	        oos.writeInt(100);
-	        
-	        ObjectInputStream ois = new ObjectInputStream( m_clientSocket.getInputStream());
-	        int command = ois.readInt(); // ждем пока коммуникатор пришлет, что разметил корабли
-	        if ( command == 101 )
+	        oos.flush();
+	        System.out.println("Соточка ушла");
+	        int command = 0;
+	        do
 	        {
-	        	if (gs.flag_xoda) gs.XOD.setText("Your turn, FIREEEE");
-	        	gs.label_i.setText("Клиент разметил корабли. ура");
-	        }
+		        ObjectInputStream ois = new ObjectInputStream( gs.socket.getInputStream());
+		        System.out.println("ois");
+		        command = ois.readInt(); // ждем пока коммуникатор пришлет, что разметил корабли
+		        if ( command == 101 )
+		        {
+		        	System.out.println("Соточка один пришла");
+		        	
+		        	if (gs.flag_xoda) 
+		        		gs.XOD.setText("Your turn, FIREEEE");
+		        	else 
+		        		gs.XOD.setText("Opponent's turn");
+		        	
+		        	gs.label_i.setText("Клиент разметил корабли. ура");
+		        }
+		        if ( command == 102 )
+		        {
+		        	System.out.println("Соточка два пришла");
+		        	ObjectOutputStream oos1 = new ObjectOutputStream( gs.socket.getOutputStream());
+			        oos1.writeInt(103);
+			        oos1.flush();
+			        System.out.println("Соточка три ушла");
+		        }
+	        } while (command != 101);
 	        
 	        gs.currLen     = 0;
 	        gs.indexInShip = 0;
