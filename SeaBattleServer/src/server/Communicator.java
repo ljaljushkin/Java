@@ -25,8 +25,10 @@ public class Communicator extends Thread
 	
 	private int m_count = 0;
 	
-	public Ship[]	   ships       = new Ship[ 10 ];
-    public MyLabel[][] enemyField  = new MyLabel[ 10 ][ 10 ];
+	public Ship[]	   ships;
+    public MyLabel[][] enemyField;  
+    
+    boolean[][] bool_arr = new boolean [10][10];
 	
 	public Communicator( Socket client, HashMap< Communicator,ClientInfo > freeClient, 
 			HashMap< Communicator,ClientInfo > busyClient,JTextArea out, 
@@ -38,6 +40,19 @@ public class Communicator extends Thread
 		this.m_clientTextArea = out;
 		this.m_clientInfo     = cl;
 		this.m_serverThread   = st;
+		
+		ships = new Ship[ 10 ];
+		enemyField = new MyLabel[ 10 ][ 10 ];
+		
+		for(int i = 0; i < 10; i++)
+		{
+			ships[i] = new Ship();
+			enemyField[i] = new MyLabel[10];
+			for(int j = 0; j < 10; j++)
+			{
+				enemyField[i][j] = new MyLabel();
+			}
+		}
 	}
 	
 	public void sendLists()
@@ -330,21 +345,34 @@ public class Communicator extends Thread
 					//	m_clientTextArea.append(e.getMessage());
 					//}
 					
-					//m_clientInfo.m_partner.enemyField = new MyLabel[10][10];
+					//enemyField = new MyLabel[10][10];
 					for (int i = 0; i < 10; i++)
 					{
 						for (int j = 0; j < 10; j++)
 						{
-							//m_clientInfo.m_partner.enemyField[i][j].IsShip = (boolean)ois.readObject();
-							boolean bool = (boolean)ois.readObject();
-							if (bool)
+							m_clientInfo.m_partner.enemyField[i][j].IsShip = (boolean)ois.readObject();
+							m_clientInfo.m_partner.enemyField[i][j].IsFired = (boolean)ois.readObject();
+							m_clientInfo.m_partner.enemyField[i][j].ambit = (boolean)ois.readObject();
+							m_clientInfo.m_partner.enemyField[i][j].indexOfShip = (int)ois.readObject();
+							
+							
+							//boolean bool = (boolean)ois.readObject();
+							
+							//bool_arr[i][j] = (boolean)ois.readObject();
+							//m_clientInfo.m_partner.enemyField[i][j].IsShip = bool;
+							//enemyField[i][j].IsShip = bool;
+							//if (bool_arr[i][j])
+								//m_clientTextArea.append("0 ");
+							//else
+								//m_clientTextArea.append("1 ");
+							
+							//bool_arr[i][j] = bool;
+							//int ind = (int)ois.readObject();
+							
+							if (m_clientInfo.m_partner.enemyField[i][j].IsShip)
 								m_clientTextArea.append("0 ");
 							else
 								m_clientTextArea.append("1 ");
-							//if (m_clientInfo.m_partner.enemyField[i][j].IsShip)
-							//	m_clientTextArea.append("0 ");
-							//else
-							//	m_clientTextArea.append("1 ");
 							//m_clientInfo.m_partner.enemyField[i][j].indexOfShip = ois.readInt();
 							//m_clientInfo.m_partner.enemyField[i][j].IsFired = ois.readBoolean();
 							//m_clientInfo.m_partner.enemyField[i][j].ambit = ois.readBoolean();
@@ -373,6 +401,7 @@ public class Communicator extends Thread
 						m_clientTextArea.append("\n");
 					}
 					m_clientTextArea.append("\n");m_clientTextArea.append("\n");*/
+					//FillEnemyField();
 				}
 				if ( nComand == 104 ) // прием карты, запись в комм. партнера
 				{
@@ -386,10 +415,22 @@ public class Communicator extends Thread
 		}
 		catch( Exception e )
 		{
+			e.printStackTrace();
 			if ( m_clientInfo.m_partner != null )
 				m_clientInfo.m_partner.disconnect();
 			
 			disconnect();
 		}
+	}
+
+	private void FillEnemyField() {
+		for(int i = 0; i < 10; i++)
+		{
+			for(int j = 0; j < 10; j++)
+			{
+				enemyField[i][j].IsShip = bool_arr[i][j];
+			}
+		}
+		
 	}
 }

@@ -3,7 +3,7 @@ import java.io.Serializable;
 
 import javax.swing.JLabel;
 
-public class MyLabel extends JLabel implements Serializable
+public class MyLabel extends JLabel
 {
 	//private static final long serialVersionUID = 1L;
 	//int x           = -1;    // координаты label в системе координат 1..10 х 1..10

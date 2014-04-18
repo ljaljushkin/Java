@@ -170,9 +170,13 @@ public class ClientThread extends Thread
 	        	{
 	        		oos3.writeObject(gs.myField[i][j].IsShip);
 	        		oos3.flush();
-	        		//oos3.writeInt(gs.myField[i][j].indexOfShip);
-	        		//oos3.writeBoolean(gs.myField[i][j].IsFired);
-	        		//oos3.writeBoolean(gs.myField[i][j].ambit);
+	        		oos3.writeObject(gs.myField[i][j].IsFired);
+	        		oos3.flush();
+	        		oos3.writeObject(gs.myField[i][j].ambit);
+	        		oos3.flush();
+	        		oos3.writeObject(gs.myField[i][j].indexOfShip);
+	        		oos3.flush();
+	        		
 	        	}
 	        }
 	        //oos3.flush();

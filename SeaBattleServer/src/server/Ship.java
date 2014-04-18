@@ -7,6 +7,10 @@ public class Ship implements Serializable
 	int len;
 	int[] arrOfXY;
 	
+	Ship()
+	{
+	}
+	
 	Ship(int l)
 	{ 
 		len=l;
