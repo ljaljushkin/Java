@@ -7,6 +7,7 @@ import java.awt.event.MouseEvent;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.util.Random;
 
 import javax.swing.Icon;
 import javax.swing.JButton;
@@ -65,6 +66,24 @@ public class GameState
     
     public boolean flag = true;
     
+    // marking ambit
+    public void MarkingAmbit(int x, int y) 
+    {   
+		for( int j = -1; j < 2; j++ )
+		{
+			for( int g = -1; g < 2; g++ )
+			{
+				if( x+j > -1 && x+j < 10 && y+g > -1 && y+g < 10 )
+				{
+					MyLabel label = myField[x+j][y+g];
+					
+					if( !label.IsShip && !label.ambit )
+						label.ambit = true;
+				}
+			}
+		}
+    }
+	
     public void DrawSea( GridBagConstraints c )
 	{	
 		for ( int i = 0; i < 10; i++ )
@@ -171,6 +190,80 @@ public class GameState
 		ships[ind] = new Ship(len);
 	}
 	
+	public void DumpFields()
+	{
+		for(int j = 0; j < 10; j++ )
+		{
+			for(int i = 0; i < 10; i++ )
+			{
+				if (myField[i][j].ambit && myField[i][j].IsShip)		
+					System.out.print("3 ");
+				else
+				if (myField[i][j].ambit)		
+						System.out.print("1 ");
+				else
+				if (myField[i][j].IsShip)		
+					System.out.print("2 ");
+				else
+				if (!myField[i][j].ambit && !myField[i][j].IsShip)		
+					System.out.print("0 ");
+				
+			}
+			System.out.println();
+		}
+		System.out.println();System.out.println();
+	}
+	
+	public void createShipRandomly()
+	{
+		boolean flag = true;
+		
+		while ( flag )
+		{
+			boolean isFound = true;
+			Random r = new Random();
+			int x, y;
+			
+			do
+			{
+				x = r.nextInt(9);
+				y = r.nextInt(9);
+			} while (!myField[x][y].isAvailable());
+			
+			if (9 - x >= currLen - 1)
+			{
+				for (int i = x; i < x + currLen; i++)
+				{
+					if (!myField[i][y].isAvailable())
+					{
+						isFound = false;
+						break;
+					}
+				}
+				
+				if (isFound)
+				{
+					
+					ships[indexInShip] = new Ship(currLen);
+					for (int i = 0; i < currLen; i++ )
+					{
+						//DumpFields();
+						myField[x + i][y].setIcon( marked );
+						myField[x + i][y].mark = true;
+						myField[x + i][y].IsShip = true;
+						ships[indexInShip].arrOfXY[2 * i] = x + i;
+						ships[indexInShip].arrOfXY[2 * i + 1] = y;
+					}
+					for (int i = 0; i < currLen; i++ )
+					{
+						MarkingAmbit(x + i, y);
+					}
+					
+					flag = false;
+				}	
+			}
+		}
+	}
 	public boolean IsLine()
 	{
 		Ship sh    = ships[ currIndex ];

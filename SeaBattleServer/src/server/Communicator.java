@@ -12,6 +12,7 @@ import javax.swing.JTextArea;
 
 public class Communicator extends Thread
 {	
+	
 	private Socket m_client;
 	
 	private HashMap< Communicator,ClientInfo > m_freeClient;
@@ -116,7 +117,7 @@ public class Communicator extends Thread
 		try
 		{
 			ObjectOutputStream oos = new ObjectOutputStream( m_client.getOutputStream() );
-			oos.writeInt( 5 );
+			oos.writeInt( 666 );
 			oos.writeBoolean( isFirst );
 			oos.flush();
 		}
@@ -148,7 +149,7 @@ public class Communicator extends Thread
 		}
 	}
 	
-	public void sendTurn( int x, int y, int nx, int ny )
+	public void sendTurn( int x, int y, int nx, int ny ) //!!
 	{
 		try
 		{
@@ -175,8 +176,21 @@ public class Communicator extends Thread
 		{
 			while ( true )
 			{
+
+				Communicator partner = m_clientInfo.m_partner;
+				if (partner != null)
+				{
+					if ( partner.m_clientInfo.m_isMarking && m_clientInfo.isFirst && m_clientInfo.m_isMarking)
+					{
+						ObjectOutputStream oos = new ObjectOutputStream( m_client.getOutputStream());
+						oos.writeInt( 101 );
+						ObjectOutputStream oos_partner = new ObjectOutputStream( partner.m_client.getOutputStream());
+						oos_partner.writeInt( 101 );
+					}
+				}
+				
 				ObjectInputStream ois = new ObjectInputStream( m_client.getInputStream() );
-				int nComand=ois.readInt();
+				int nComand = ois.readInt();
 				
 				if ( nComand == 0 ) 
 				{
@@ -221,7 +235,9 @@ public class Communicator extends Thread
 							m_serverThread.sendListsAll();
 							
 							this.initGame( false );
+							m_clientInfo.isFirst = false;
 							s.getKey().initGame( true );
+							s.getKey().m_clientInfo.isFirst = true;
 							break;
 						}
 					}
@@ -277,6 +293,12 @@ public class Communicator extends Thread
 					m_freeClient.remove( this );
 					m_clientTextArea.append( m_clientInfo.m_name+" created game!\n" );
 					m_serverThread.sendListsAll();
+				}
+				if ( nComand == 100 ) // клиент - разметил
+				{
+					m_clientInfo.m_isMarking = true;;
+					
+					//m_clientTextArea.append( m_clientInfo.m_name+" Ships were marked!\n" );
 				}
 			}
 		}

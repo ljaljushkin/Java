@@ -97,6 +97,36 @@ public class ClientThread extends Thread
 			
 			gs.chat.setText("");*/
 			
+			gs.label.setText("Раставьте корабли");
+			
+	        while( gs.flag )
+	        {
+	        	if( gs.flag_readyShips )
+	        	{
+	        		//out.writeUTF("Клиент разметил корабли!");
+	        		//out.flush(); // заставляем поток закончить передачу данных.
+	        		gs.flag_readyShips = false;
+	        		gs.flag = false;
+	        		gs.flag_game = true;
+	        		//gs.flag_xoda = false; // Server is the first
+	        	}
+	        }
+	        
+	        ObjectOutputStream oos = new ObjectOutputStream( m_clientSocket.getOutputStream());
+	        oos.writeInt(100);
+	        
+	        ObjectInputStream ois = new ObjectInputStream( m_clientSocket.getInputStream());
+	        int command = ois.readInt(); // ждем пока коммуникатор пришлет, что разметил корабли
+	        if ( command == 101 )
+	        {
+	        	if (gs.flag_xoda) gs.XOD.setText("Your turn, FIREEEE");
+	        	gs.label_i.setText("Клиент разметил корабли. ура");
+	        }
+	        
+	        gs.currLen     = 0;
+	        gs.indexInShip = 0;
+	        gs.flag        = true;
+	        
 			while ( true )
 			{	
 				

@@ -303,7 +303,7 @@ public class ConnectionThread extends Thread
 					}
 				}
 				
-				if( nComand==5 )
+				if( nComand==666 )
 				{
 					boolean isFirst = ois.readBoolean();
 					InitGame( isFirst );

@@ -1,6 +1,7 @@
 package client;
 
 import java.net.*;
+import java.util.Random;
 import java.util.StringTokenizer;
 import java.io.*;
 import java.awt.*;
@@ -49,7 +50,7 @@ public class MainWindow
         line = in.readUTF(); // ждем пока сервер пришлет, что установил соединение
         label_conn.setText(line); */
          
-		gs.label.setText("Раставьте корабли");
+		/*gs.label.setText("Раставьте корабли");
 		
         while( gs.flag )
         {
@@ -62,7 +63,7 @@ public class MainWindow
         		gs.flag_game = true;
         		//gs.flag_xoda = false; // Server is the first
         	}
-        }
+        }*/
         
         //line = in.readUTF(); // ждем пока сервер пришлет, что разметил корабли
         //label_conn.setText(line);
@@ -431,7 +432,7 @@ public class MainWindow
 			{
 				if( !gs.flag_newShips )
 				{
-					gs.label.setText("Началась разметка кораблей");
+					/*gs.label.setText("Началась разметка кораблей");
 					gs.label_i.setVisible( true );
 					panel_palub.setVisible( true );
 					buttonAdd.setVisible( true );
@@ -440,6 +441,16 @@ public class MainWindow
 					gs.label_i.setText("Разметка 4-палубника");
 					gs.indexInShip = 0;
 					gs.markShips();	
+					gs.shipButton.setEnabled( false );*/
+					gs.label.setText("Началась разметка кораблей");
+					gs.flag_newShips = true;
+					gs.indexInShip = 0;
+					
+					for(gs.indexInShip = 0; gs.indexInShip < 10; gs.indexInShip++)
+					{
+						gs.SetCurrLen(gs.indexInShip);
+						gs.createShipRandomly();
+					}
 					gs.shipButton.setEnabled( false );
 				}
 			}
@@ -480,20 +491,7 @@ public class MainWindow
 							gs.myField[x][y].setIcon(gs.marked);
 							gs.myField[x][y].mark = true;
 							
-							// marking ambit
-							for( int j = -1; j < 2; j++ )
-							{
-								for( int g = -1; g < 2; g++ )
-								{
-									if( x+j > -1 && x+j < 10 && y+g > -1 && y+g < 10 )
-									{
-										MyLabel la = gs.myField[x+j][y+g];
-										
-										if( !la.IsShip && !la.ambit )
-											la.ambit=true;
-									}
-								}
-							}
+							gs.MarkingAmbit(x, y);
 						}
 						
 						gs.decks.setText("Корабль добавлен");
