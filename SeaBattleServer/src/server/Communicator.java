@@ -12,7 +12,6 @@ import javax.swing.JTextArea;
 
 public class Communicator extends Thread
 {	
-	
 	private Socket m_client;
 	
 	private HashMap< Communicator,ClientInfo > m_freeClient;
@@ -25,6 +24,9 @@ public class Communicator extends Thread
 	private ServerThread m_serverThread;
 	
 	private int m_count = 0;
+	
+	public Ship[]	   ships       = new Ship[ 10 ];
+    public MyLabel[][] enemyField  = new MyLabel[ 10 ][ 10 ];
 	
 	public Communicator( Socket client, HashMap< Communicator,ClientInfo > freeClient, 
 			HashMap< Communicator,ClientInfo > busyClient,JTextArea out, 
@@ -176,7 +178,6 @@ public class Communicator extends Thread
 		{
 			while ( true )
 			{
-
 				Communicator partner = m_clientInfo.m_partner;
 				if (partner != null)
 				{
@@ -189,7 +190,7 @@ public class Communicator extends Thread
 						ObjectOutputStream oos_partner = new ObjectOutputStream( partner.m_client.getOutputStream());
 						m_clientTextArea.append("Соточка один ушла \n");
 						oos_partner.writeInt( 101 );
-						oos.flush();
+						oos_partner.flush();
 						partner.m_clientInfo.m_isMarking = false;
 						m_clientInfo.m_isMarking = false;
 					}
@@ -314,20 +315,73 @@ public class Communicator extends Thread
 						oos.flush();
 					}
 				}
-				if ( nComand == 103 ) // клиент - разметил
+				
+				if ( nComand == 103 ) // прием карты, запись в комм. партнера
 				{
-					m_clientTextArea.append("Соточка один ушла \n");
-					ObjectOutputStream oos = new ObjectOutputStream( m_client.getOutputStream());
-					oos.writeInt( 101 );
-					oos.flush();
-					ObjectOutputStream oos_partner = new ObjectOutputStream( partner.m_client.getOutputStream());
-					m_clientTextArea.append("Соточка один ушла \n");
-					oos_partner.writeInt( 101 );
-					oos.flush();
-					partner.m_clientInfo.m_isMarking = false;
-					m_clientInfo.m_isMarking = false;
+					//ois.close();
+					m_clientTextArea.append("Соточка три пришла\n");
+					//ObjectInputStream ois1 = null;
+					//try
+					//{
+					//	ois1 = new ObjectInputStream( m_client.getInputStream() );
+					//}
+					//catch( Exception e )
+					//{
+					//	m_clientTextArea.append(e.getMessage());
+					//}
+					
+					//m_clientInfo.m_partner.enemyField = new MyLabel[10][10];
+					for (int i = 0; i < 10; i++)
+					{
+						for (int j = 0; j < 10; j++)
+						{
+							//m_clientInfo.m_partner.enemyField[i][j].IsShip = (boolean)ois.readObject();
+							boolean bool = (boolean)ois.readObject();
+							if (bool)
+								m_clientTextArea.append("0 ");
+							else
+								m_clientTextArea.append("1 ");
+							//if (m_clientInfo.m_partner.enemyField[i][j].IsShip)
+							//	m_clientTextArea.append("0 ");
+							//else
+							//	m_clientTextArea.append("1 ");
+							//m_clientInfo.m_partner.enemyField[i][j].indexOfShip = ois.readInt();
+							//m_clientInfo.m_partner.enemyField[i][j].IsFired = ois.readBoolean();
+							//m_clientInfo.m_partner.enemyField[i][j].ambit = ois.readBoolean();
+						}
+						m_clientTextArea.append("\n");
+					}
+					
+					//dumping
+					/*for(int j = 0; j < 10; j++ )
+					{
+						for(int i = 0; i < 10; i++ )
+						{
+							if (m_clientInfo.m_partner.enemyField[i][j].ambit && m_clientInfo.m_partner.enemyField[i][j].IsShip)		
+								m_clientTextArea.append("3 ");
+							else
+							if (m_clientInfo.m_partner.enemyField[i][j].ambit)		
+								m_clientTextArea.append("1 ");
+							else
+							if (m_clientInfo.m_partner.enemyField[i][j].IsShip)		
+								m_clientTextArea.append("2 ");
+							else
+							if (!m_clientInfo.m_partner.enemyField[i][j].ambit && !m_clientInfo.m_partner.enemyField[i][j].IsShip)		
+								m_clientTextArea.append("0 ");
+							
+						}
+						m_clientTextArea.append("\n");
+					}
+					m_clientTextArea.append("\n");m_clientTextArea.append("\n");*/
 				}
-					//m_clientTextArea.append( m_clientInfo.m_name+" Ships were marked!\n" );
+				if ( nComand == 104 ) // прием карты, запись в комм. партнера
+				{
+					ois.close();
+					m_clientTextArea.append("Соточка четыре пришла\n");
+					ObjectInputStream ois1 = new ObjectInputStream(m_client.getInputStream());
+					m_clientInfo.m_partner.ships = (Ship[]) ois1.readObject(); 
+				}
+				
 			}
 		}
 		catch( Exception e )

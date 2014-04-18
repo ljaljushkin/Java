@@ -7,7 +7,5 @@ public class ClientInfo
 	public boolean m_played = false;
 	public boolean m_waiting = false;
 	public boolean m_isMarking= false;
-	public Communicator m_partner;
-	
-	
+	public Communicator m_partner;	
 }

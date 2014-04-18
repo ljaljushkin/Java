@@ -1,6 +1,7 @@
 package client;
 
 import java.awt.event.MouseEvent;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -113,13 +114,14 @@ public class ClientThread extends Thread
 	        }
 	        
 	        ObjectOutputStream oos = new ObjectOutputStream( gs.socket.getOutputStream());
+	        ObjectInputStream ois; 
 	        oos.writeInt(100);
 	        oos.flush();
 	        System.out.println("Соточка ушла");
 	        int command = 0;
 	        do
 	        {
-		        ObjectInputStream ois = new ObjectInputStream( gs.socket.getInputStream());
+		        ois = new ObjectInputStream( gs.socket.getInputStream());
 		        System.out.println("ois");
 		        command = ois.readInt(); // ждем пока коммуникатор пришлет, что разметил корабли
 		        if ( command == 101 )
@@ -137,15 +139,46 @@ public class ClientThread extends Thread
 		        {
 		        	System.out.println("Соточка два пришла");
 		        	ObjectOutputStream oos1 = new ObjectOutputStream( gs.socket.getOutputStream());
-			        oos1.writeInt(103);
+			        oos1.writeInt(100);
 			        oos1.flush();
-			        System.out.println("Соточка три ушла");
+			        System.out.println("Соточка ушла");
 		        }
 	        } while (command != 101);
 	        
 	        gs.currLen     = 0;
 	        gs.indexInShip = 0;
 	        gs.flag        = true;
+	        
+	        /*oos.writeInt(104);
+	        //oos.writeObject(gs.ships);
+	        oos.flush();
+	        
+	        ByteArrayOutputStream bs = new ByteArrayOutputStream();
+	        ObjectOutputStream os = new ObjectOutputStream(bs);
+	        os.writeObject(gs.ships);
+	        byte[] messageArrayBytes = bs.toByteArray();
+	        gs.socket.getOutputStream().write(messageArrayBytes);
+	        gs.socket.getOutputStream().flush();
+	        System.out.println("Корабли ушли");*/
+	        
+	        ObjectOutputStream oos3 = new ObjectOutputStream( gs.socket.getOutputStream());
+	        oos3.writeInt(103);
+	        oos3.flush();
+	        for (int i = 0; i < 10; i++ )
+	        {
+	        	for (int j = 0; j < 10; j++ )
+	        	{
+	        		oos3.writeObject(gs.myField[i][j].IsShip);
+	        		oos3.flush();
+	        		//oos3.writeInt(gs.myField[i][j].indexOfShip);
+	        		//oos3.writeBoolean(gs.myField[i][j].IsFired);
+	        		//oos3.writeBoolean(gs.myField[i][j].ambit);
+	        	}
+	        }
+	        //oos3.flush();
+	        System.out.println("Карта ушла");
+	        
+	        gs.DumpFields();
 	        
 			while ( true )
 			{	

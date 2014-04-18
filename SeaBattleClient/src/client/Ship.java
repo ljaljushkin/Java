@@ -1,6 +1,8 @@
 package client;
 
-public class Ship 
+import java.io.Serializable;
+
+public class Ship implements Serializable
 {
 	int len;
 	int[] arrOfXY;
