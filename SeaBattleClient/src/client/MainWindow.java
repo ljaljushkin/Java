@@ -9,10 +9,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import javax.swing.*;
 
-import javax.swing.JButton;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 
 public class MainWindow 
 {
@@ -77,153 +75,6 @@ public class MainWindow
         gs.indexInShip = 0;
         gs.flag        = true;
         
-        while( gs.flag )
-        {
-        	if( gs.flag_xoda )// ваш ход
-        	{
-				if( gs.flag_choose ) // если выбрана клетка
-				{
-					gs.flag_choose  = false;
-					byte fromServer = -1;
-					//out.writeUTF(X+","+Y);
-					gs.label_i.setText("Вы выстрелили по: " + gs.X + " " + gs.Y);
-					
-				 	//fromServer = in.readByte();
-				 	switch( fromServer )
-				 	{
-						case 0: 
-							gs.enemyField[gs.X][gs.Y].setIcon(gs.mimo);
-							gs.enemyField[gs.X][gs.Y].IsShip = false;
-							gs.flag_xoda = false;
-							gs.decks.setText("Мимо!");
-							gs.XOD.setText("ХОДИТ СЕРВЕР");
-							break;
-						case 1:
-							gs.enemyField[gs.X][gs.Y].setIcon(gs.injured);
-							gs.enemyField[gs.X][gs.Y].IsShip = true;
-							gs.decks.setText("Ранили!");
-							gs.XOD.setText("ВАШ ХОД");
-							gs.flag_xoda = true;
-							break;
-						case 2:
-							//line = in.readUTF();
-	    			 		//StringTokenizer st = new StringTokenizer(line, ",");
-							StringTokenizer st = new StringTokenizer("", ","); //TODO!!!
-	    			 		while( st.hasMoreTokens() )
-	    			 		{
-	    			 			gs.X = Integer.parseInt(st.nextToken());
-	    			 			gs.Y = Integer.parseInt(st.nextToken());
-	    			 			gs.enemyField[gs.X][gs.Y].IsShip = true;
-	                    		
-	                    		for( int j = -1; j < 2; j++ )
-								{
-									for( int g = -1; g < 2; g++ )
-									{
-										if( gs.X + j > -1 && gs.X + j < 10 && gs.Y + g > -1 && gs.Y + g < 10 )
-										{
-											MyLabel la = gs.enemyField[gs.X + j][gs.Y + g];
-											
-											if( !la.IsShip )
-												la.setIcon(gs.mimo);
-											
-											la.IsFired = true;
-										}
-									}
-								}
-	                    		
-	                    		gs.enemyField[gs.X][gs.Y].setIcon(gs.dead);
-	    			 		
-	    			 		}
-	    			 		
-	    			 		gs.decks.setText("Корабль убит!");
-	    			 		gs.XOD.setText("ВАШ ХОД");
-	    			 		gs.flag_xoda = true;
-	    			 		gs.currLen++;
-	    			 		
-	    			 		if( gs.currLen == 10 )
-	    			 		{
-	    			 			gs.flag = false;
-	    			 			gs.XOD.setText("YOU WIN!!!");
-	    			 		}
-	    			 		
-							break;
-						 }
-				}
-       		}
-        	else // сервер стреляет
-        	{
-        		//line = in.readUTF();
-        		//StringTokenizer st = new StringTokenizer(line, ",");
-        		
-        		StringTokenizer st = new StringTokenizer("", ","); //TODO!!
-        		
-        		gs.X = Integer.parseInt(st.nextToken());
-        		gs.Y = Integer.parseInt(st.nextToken());
-        		
-        		MyLabel lN = gs.myField[gs.X][gs.Y];
-        		
-        		gs.label_i.setText("Cервер выстрелил по: " + gs.X + " " + gs.Y);
-        		
-        		byte toServ = -1;
-        		
-        		if( gs.X > -1 && gs.X < 10 && gs.Y > -1 && gs.Y < 10 )
-        		{
-        			lN.IsFired = true;
-        			if( lN.IsShip )
-    				{
-    					if( gs.CheckDead() )
-    					{	
-    						toServ = 2;
-    						//out.writeByte(toServ);
-    						int ind = lN.indexOfShip;
-    						int n   = gs.ships[ind].len;
-    						int xx,yy;
-    						String temp = "";
-    						
-    						for( int i = 0; i < n; i++ )
-    						{
-    							xx = gs.ships[ind].arrOfXY[2*i];
-    							yy = gs.ships[ind].arrOfXY[2*i+1];
-    							
-    							gs.myField[xx][yy].setIcon(gs.dead);
-    							temp = temp + xx + "," + yy + ",";
-    						}
-    						
-    						gs.decks.setText("Ваш корабль убит!");
-    						gs.XOD.setText("ХОДИТ СЕРВЕР");
-    						//out.writeUTF(temp);
-    						gs.indexInShip++;
-							
-    						if( gs.indexInShip == 10 )
-    						{
-								gs.flag = false;
-								gs.XOD.setText("YOU LOSE!!!");
-        			 		}
-    					}
-    					else
-    					{
-    						lN.setIcon( gs.injured );
-    						toServ = 1;
-    						//out.writeByte(toServ);
-    						gs.decks.setText("Ваш корабль ранен!");
-    						gs.XOD.setText("ХОДИТ СЕРВЕР");
-    					}
-    				}
-    				else
-    				{
-    					lN.setIcon( gs.mimo );
-    					toServ = 0;
-    					//out.writeByte(toServ);
-    					gs.flag_xoda = true;
-    					gs.decks.setText("Сервер промазал!");
-    					gs.XOD.setText("ВАШ ХОД");
-    				}
-        		}		
-        		else
-        			gs.label_i.setText("Некорректные координаты");
-        			//out.writeByte(toServ);
-        	}
-        }
     }
 	
 	public void createAndShowGUI()
@@ -364,11 +215,13 @@ public class MainWindow
 				// TODO Auto-generated method stub
 				if ( gs.flag_game && gs.flag_xoda )
 				{
+					
 					gs.flag_choose = false;
 					if( gs.FindXY( arg0 ) )
 					{	
 						if( !gs.enemyField[gs.X][gs.Y].IsFired )
 						{
+							System.out.println("Выстрел!!!");
 							gs.enemyField[gs.X][gs.Y].IsFired = true;
 							gs.flag_choose = true;
 						}

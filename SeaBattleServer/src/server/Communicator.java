@@ -2,6 +2,7 @@ package server;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.util.StringTokenizer;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.HashMap;
@@ -22,6 +23,8 @@ public class Communicator extends Thread
 	private ClientInfo m_clientInfo;
 	
 	private ServerThread m_serverThread;
+	
+	private int m_indexInShip = 0;
 	
 	private int m_count = 0;
 	
@@ -413,7 +416,87 @@ public class Communicator extends Thread
 						m_clientInfo.m_partner.ships[i].len = (int)ois.readObject();
 						m_clientInfo.m_partner.ships[i].arrOfXY = (int[])ois.readObject();
 						m_clientTextArea.append("len["+i+"] = " + m_clientInfo.m_partner.ships[i].len + "\n" );
+						/*for (int j = 0; j < m_clientInfo.m_partner.ships[i].len; j++)
+						{
+							m_clientTextArea.append("x = " + m_clientInfo.m_partner.ships[i].arrOfXY[2 * j] + " y = " + m_clientInfo.m_partner.ships[i].arrOfXY[2 * j + 1] + "\n" );
+						}*/
 					}
+				}
+				if ( nComand == 105 )
+				{
+					m_clientTextArea.append("Соточка пять пришла\n");
+	        		String line = ois.readUTF();
+	        		StringTokenizer st = new StringTokenizer(line, ",");
+	        		
+	        		int X = Integer.parseInt(st.nextToken());
+	        		int Y = Integer.parseInt(st.nextToken());
+	        		
+	        		MyLabel lN = m_clientInfo.m_partner.enemyField[X][Y];
+	        		
+	        		m_clientTextArea.append("Клиент выстрелил по: " + X + " " + Y + "\n");
+	        		
+	        		ObjectOutputStream oos = new ObjectOutputStream(m_client.getOutputStream());
+	        		
+	        		ObjectOutputStream oos1 = new ObjectOutputStream(m_clientInfo.m_partner.m_client.getOutputStream());
+	        		if( X > -1 && X < 10 && Y > -1 && Y < 10 )
+	        		{
+	        			lN.IsFired = true;
+	        			if( lN.IsShip )
+	    				{
+	    					if( CheckDead(X, Y) )
+	    					{	
+	    						oos.writeInt(108);
+	    						oos.flush();
+	    						oos1.writeInt(108);
+	    						oos1.flush();
+	    						int ind = lN.indexOfShip;
+	    						int n   = ships[ind].len;
+	    						int xx,yy;
+	    						String temp = "";
+	    						
+	    						for( int i = 0; i < n; i++ )
+	    						{
+	    							xx = ships[ind].arrOfXY[2*i];
+	    							yy = ships[ind].arrOfXY[2*i+1];
+	    							
+	    							temp = temp + xx + "," + yy + ",";
+	    						}
+	    						
+	    						//gs.decks.setText("Ваш корабль убит!");
+	    						//gs.XOD.setText("ХОДИТ СЕРВЕР");
+	    						oos.writeUTF(temp);
+	    						m_indexInShip++;
+								
+	    						if( m_indexInShip == 10 ) // send if someone win/lose
+	    						{
+	    							oos.writeInt(109);
+		    						oos.flush();
+		    						
+		    						
+		    						oos1.writeInt(110);
+		    						oos1.flush();
+	        			 		}
+	    					}
+	    					else
+	    					{
+	    						oos1.writeInt(107);
+	    						oos1.flush();
+	    						oos.writeInt(107);
+	    						oos.flush();
+	    						//gs.decks.setText("Ваш корабль ранен!");
+	    						//gs.XOD.setText("ХОДИТ СЕРВЕР");
+	    					}
+	    				}
+	    				else
+	    				{
+	    					oos1.writeInt(106);
+    						oos1.flush();
+	    					oos.writeInt(106);
+    						oos.flush();
+	    					//gs.decks.setText("Сервер промазал!");
+	    					//gs.XOD.setText("ВАШ ХОД");
+	    				}
+	        		}		
 				}
 				
 			}
@@ -437,5 +520,21 @@ public class Communicator extends Thread
 			}
 		}
 		
+	}
+	
+	public boolean CheckDead(int X, int Y)
+	{
+		int ind = enemyField[X][Y].indexOfShip;
+		int n   = ships[ind].len;
+		int xx, yy;
+		
+		for( int i = 0; i < n; i++ )
+		{
+			xx = ships[ind].arrOfXY[ 2 * i ];
+			yy = ships[ind].arrOfXY[ 2 * i + 1 ];
+			if( !enemyField[xx][yy].IsFired )
+				return false;
+		}
+		return true;
 	}
 }
