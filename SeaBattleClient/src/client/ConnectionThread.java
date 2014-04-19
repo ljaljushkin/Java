@@ -253,8 +253,7 @@ public class ConnectionThread extends Thread
 			//cs.lab.setText("CONNECTION LOST!!!");
 		
 			this.interrupt();
-			
-			//e.printStackTrace();
+			e.printStackTrace();
 		}
 		
 		try

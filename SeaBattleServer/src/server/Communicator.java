@@ -30,6 +30,41 @@ public class Communicator extends Thread
     
     boolean[][] bool_arr = new boolean [10][10];
 	
+    private int GetCurrLen( int currInd )
+	{
+    	int currLen = -1;
+		switch( currInd )
+		{
+			case 0:
+				currLen = 4;
+			break;
+			case 1: case 2:
+				currLen = 3;
+			break;
+			case 3: case 4: case 5: 
+				currLen = 2;
+			break;
+			case 6: case 7: case 8: case 9: 
+				currLen = 1;
+			break;
+		}
+		return currLen; 
+	}
+	
+    private void CreateShip( int len, int ind )
+	{
+		ships[ind] = new Ship(len);
+	}
+    
+	public void allocShips()
+	{
+		for (int currIndex = 0; currIndex < 10; currIndex++) 
+		{
+			CreateShip( GetCurrLen(currIndex), currIndex );
+		}
+			
+	}
+	
 	public Communicator( Socket client, HashMap< Communicator,ClientInfo > freeClient, 
 			HashMap< Communicator,ClientInfo > busyClient,JTextArea out, 
 			ClientInfo cl, ServerThread st)
@@ -44,9 +79,11 @@ public class Communicator extends Thread
 		ships = new Ship[ 10 ];
 		enemyField = new MyLabel[ 10 ][ 10 ];
 		
+		allocShips();
+		
 		for(int i = 0; i < 10; i++)
 		{
-			ships[i] = new Ship();
+			//ships[i] = new Ship();
 			enemyField[i] = new MyLabel[10];
 			for(int j = 0; j < 10; j++)
 			{
@@ -333,19 +370,7 @@ public class Communicator extends Thread
 				
 				if ( nComand == 103 ) // прием карты, запись в комм. партнера
 				{
-					//ois.close();
 					m_clientTextArea.append("Соточка три пришла\n");
-					//ObjectInputStream ois1 = null;
-					//try
-					//{
-					//	ois1 = new ObjectInputStream( m_client.getInputStream() );
-					//}
-					//catch( Exception e )
-					//{
-					//	m_clientTextArea.append(e.getMessage());
-					//}
-					
-					//enemyField = new MyLabel[10][10];
 					for (int i = 0; i < 10; i++)
 					{
 						for (int j = 0; j < 10; j++)
@@ -355,33 +380,11 @@ public class Communicator extends Thread
 							m_clientInfo.m_partner.enemyField[i][j].ambit = (boolean)ois.readObject();
 							m_clientInfo.m_partner.enemyField[i][j].indexOfShip = (int)ois.readObject();
 							
-							
-							//boolean bool = (boolean)ois.readObject();
-							
-							//bool_arr[i][j] = (boolean)ois.readObject();
-							//m_clientInfo.m_partner.enemyField[i][j].IsShip = bool;
-							//enemyField[i][j].IsShip = bool;
-							//if (bool_arr[i][j])
-								//m_clientTextArea.append("0 ");
-							//else
-								//m_clientTextArea.append("1 ");
-							
-							//bool_arr[i][j] = bool;
-							//int ind = (int)ois.readObject();
-							
-							if (m_clientInfo.m_partner.enemyField[i][j].IsShip)
-								m_clientTextArea.append("0 ");
-							else
-								m_clientTextArea.append("1 ");
-							//m_clientInfo.m_partner.enemyField[i][j].indexOfShip = ois.readInt();
-							//m_clientInfo.m_partner.enemyField[i][j].IsFired = ois.readBoolean();
-							//m_clientInfo.m_partner.enemyField[i][j].ambit = ois.readBoolean();
 						}
-						m_clientTextArea.append("\n");
 					}
 					
 					//dumping
-					/*for(int j = 0; j < 10; j++ )
+					for(int j = 0; j < 10; j++ )
 					{
 						for(int i = 0; i < 10; i++ )
 						{
@@ -400,15 +403,17 @@ public class Communicator extends Thread
 						}
 						m_clientTextArea.append("\n");
 					}
-					m_clientTextArea.append("\n");m_clientTextArea.append("\n");*/
-					//FillEnemyField();
+					m_clientTextArea.append("\n");m_clientTextArea.append("\n");
 				}
 				if ( nComand == 104 ) // прием карты, запись в комм. партнера
 				{
-					ois.close();
 					m_clientTextArea.append("Соточка четыре пришла\n");
-					ObjectInputStream ois1 = new ObjectInputStream(m_client.getInputStream());
-					m_clientInfo.m_partner.ships = (Ship[]) ois1.readObject(); 
+					for (int i = 0; i < 10; i++)
+					{
+						m_clientInfo.m_partner.ships[i].len = (int)ois.readObject();
+						m_clientInfo.m_partner.ships[i].arrOfXY = (int[])ois.readObject();
+						m_clientTextArea.append("len["+i+"] = " + m_clientInfo.m_partner.ships[i].len + "\n" );
+					}
 				}
 				
 			}

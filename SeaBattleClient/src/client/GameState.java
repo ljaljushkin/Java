@@ -66,6 +66,12 @@ public class GameState
     
     public boolean flag = true;
     
+    public GameState()
+    {
+    	ships       = new Ship[ 10 ];
+        myField     = new MyLabel[ 10 ][ 10 ];
+        enemyField  = new MyLabel[ 10 ][ 10 ];
+    }
     // marking ambit
     public void MarkingAmbit(int x, int y) 
     {   

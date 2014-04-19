@@ -80,36 +80,16 @@ public class ClientThread extends Thread
 	public void run()
 	{
 		try
-		{
-			//gs.out.setText("");
-			
-			//gs.out.append("Connection succes!\n");		
-			
-			//refreshGameField();
-			
-			/*if (gs.nTeam==2){
-				gs.myTurn=false;
-				gs.out.append("Opponents turn!\n");
-			}
-			else{
-				gs.myTurn=true;
-				gs.out.append("Your turn!\n");
-			}	
-			
-			gs.chat.setText("");*/
-			
+		{			
 			gs.label.setText("Раставьте корабли");
 			
 	        while( gs.flag )
 	        {
 	        	if( gs.flag_readyShips )
 	        	{
-	        		//out.writeUTF("Клиент разметил корабли!");
-	        		//out.flush(); // заставляем поток закончить передачу данных.
 	        		gs.flag_readyShips = false;
 	        		gs.flag = false;
 	        		gs.flag_game = true;
-	        		//gs.flag_xoda = false; // Server is the first
 	        	}
 	        }
 	        
@@ -138,9 +118,9 @@ public class ClientThread extends Thread
 		        if ( command == 102 )
 		        {
 		        	System.out.println("Соточка два пришла");
-		        	ObjectOutputStream oos1 = new ObjectOutputStream( gs.socket.getOutputStream());
-			        oos1.writeInt(100);
-			        oos1.flush();
+		        	//ObjectOutputStream oos1 = new ObjectOutputStream( gs.socket.getOutputStream());
+			        oos.writeInt(100);
+			        oos.flush();
 			        System.out.println("Соточка ушла");
 		        }
 	        } while (command != 101);
@@ -149,17 +129,17 @@ public class ClientThread extends Thread
 	        gs.indexInShip = 0;
 	        gs.flag        = true;
 	        
-	        /*oos.writeInt(104);
-	        //oos.writeObject(gs.ships);
-	        oos.flush();
-	        
-	        ByteArrayOutputStream bs = new ByteArrayOutputStream();
-	        ObjectOutputStream os = new ObjectOutputStream(bs);
-	        os.writeObject(gs.ships);
-	        byte[] messageArrayBytes = bs.toByteArray();
-	        gs.socket.getOutputStream().write(messageArrayBytes);
-	        gs.socket.getOutputStream().flush();
-	        System.out.println("Корабли ушли");*/
+	        ObjectOutputStream oos4 = new ObjectOutputStream( gs.socket.getOutputStream());
+	        oos4.writeInt(104);
+	        oos4.flush();
+	        for(int i = 0; i < 10; i++)
+	        {
+		        oos4.writeObject(gs.ships[i].len);
+		        oos4.flush();
+		        oos4.writeObject(gs.ships[i].arrOfXY);
+		        oos4.flush();
+	        }
+	        System.out.println("Корабли ушли");
 	        
 	        ObjectOutputStream oos3 = new ObjectOutputStream( gs.socket.getOutputStream());
 	        oos3.writeInt(103);
